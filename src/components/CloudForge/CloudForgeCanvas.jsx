@@ -195,7 +195,7 @@ export default function CloudForgeCanvas() {
   };
 
   const handleExportTerraform = () => {
-    const lines = ["# CloudForge Terraform", `# Est. Cost: $${totalCost}/mo`, "", ...nodes.filter((n) => n.type === "cloud").map((n) => `resource "aws_${n.data.type}" "${n.id}" {\n  tags = { Name = "cloudforge-${n.id}" }\n}`)].join("\n");
+    const lines = ["# StackForge Terraform", `# Est. Cost: $${totalCost}/mo`, "", ...nodes.filter((n) => n.type === "cloud").map((n) => `resource "aws_${n.data.type}" "${n.id}" {\n  tags = { Name = "cloudforge-${n.id}" }\n}`)].join("\n");
     const blob = new Blob([lines], { type: "text/plain" });
     Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "main.tf" }).click();
   };
@@ -258,7 +258,7 @@ export default function CloudForgeCanvas() {
               fontSize:14, boxShadow:"0 0 12px #1d6fff44",
             }}>☁</div>
             <span style={{ fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:14, color:"#e2eaf4", letterSpacing:"-0.3px" }}>
-              CloudForge
+              StackForge
             </span>
           </div>
 

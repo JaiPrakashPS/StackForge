@@ -38,7 +38,7 @@ export default function Sidebar({ totalCost, nodeCount, edgeCount, onClear, onEx
           }}>☁</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ color: "#f1f5f9", fontSize: 15, fontWeight: 800, letterSpacing: "-0.5px", lineHeight: 1.2 }}>
-              CloudForge
+              StackForge
             </div>
             <div style={{ color: "#1e3a5f", fontSize: 9, letterSpacing: "0.1em" }}>
               ARCHITECTURE DESIGNER

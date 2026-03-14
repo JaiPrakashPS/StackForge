@@ -1,8 +1,8 @@
-# ☁ CloudForge
+# ☁ StackForge
 
 > **Visual cloud architecture designer** — Drag, connect, and export AWS infrastructure diagrams with real-time cost estimation, security hints, and one-click Terraform export.
 
-![CloudForge](https://img.shields.io/badge/CloudForge-v0.1.0-2563eb?style=for-the-badge&logo=amazonaws)
+![StackForge](https://img.shields.io/badge/StackForge-v0.1.0-2563eb?style=for-the-badge&logo=amazonaws)
 ![React](https://img.shields.io/badge/React-18.3-61dafb?style=flat-square&logo=react)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=flat-square&logo=node.js)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47a248?style=flat-square&logo=mongodb)
@@ -36,7 +36,7 @@
 
 ## 🌟 Overview
 
-CloudForge is a full-stack web application that lets engineers design cloud infrastructure visually. Instead of writing YAML or Terraform from scratch, you drag AWS components onto an infinite canvas, connect them, and instantly see your monthly cost estimate. When you're ready, export to Terraform or JSON in one click.
+StackForge is a full-stack web application that lets engineers design cloud infrastructure visually. Instead of writing YAML or Terraform from scratch, you drag AWS components onto an infinite canvas, connect them, and instantly see your monthly cost estimate. When you're ready, export to Terraform or JSON in one click.
 
 **Who is it for?**
 - DevOps engineers designing new infrastructure
@@ -96,7 +96,7 @@ CloudForge is a full-stack web application that lets engineers design cloud infr
 ## 📁 Project Structure
 
 ```
-CloudForge/
+StackForge/
 ├── src/                              # Frontend source root
 │   ├── App.jsx                       # Router + AuthProvider setup
 │   ├── main.jsx                      # ReactDOM entry point
@@ -120,9 +120,9 @@ CloudForge/
 │       │   ├── MyDiagram.jsx         # Saved diagrams dashboard
 │       │   ├── MyDiagrams.css
 │       │   └── index.js
-│       └── CloudForge/
-│           ├── CloudForgeCanvas.jsx  # Main canvas orchestrator
-│           ├── CloudForgeCanvas.css
+│       └── StackForge/
+│           ├── StackForgeCanvas.jsx  # Main canvas orchestrator
+│           ├── StackForgeCanvas.css
 │           ├── CloudNode.jsx         # AWS component node
 │           ├── CloudNode.css
 │           ├── ShapeNodes.jsx        # Rectangle, Circle, Text, Frame, Comment
@@ -175,8 +175,8 @@ Make sure you have the following installed:
 **1. Clone the repository**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/cloudforge.git
-cd cloudforge
+git clone https://github.com/YOUR_USERNAME/StackForge.git
+cd StackForge
 ```
 
 **2. Install frontend dependencies**
@@ -208,7 +208,7 @@ Then fill in the values:
 
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/cloudforge
+MONGO_URI=mongodb://localhost:27017/StackForge
 JWT_SECRET=your_super_secret_key_at_least_32_characters_long
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5173
@@ -217,7 +217,7 @@ CLIENT_URL=http://localhost:5173
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `PORT` | Port the Express server listens on | `5000` |
-| `MONGO_URI` | MongoDB connection string | `mongodb://localhost:27017/cloudforge` |
+| `MONGO_URI` | MongoDB connection string | `mongodb://localhost:27017/StackForge` |
 | `JWT_SECRET` | Secret key for signing JWT tokens — keep this private | Any long random string |
 | `JWT_EXPIRES_IN` | How long login sessions last | `7d` |
 | `CLIENT_URL` | URL of your React frontend — used for CORS | `http://localhost:5173` |
@@ -229,7 +229,7 @@ CLIENT_URL=http://localhost:5173
 
 > **MongoDB Atlas:** If using cloud MongoDB, your URI will look like:
 > ```
-> mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/cloudforge
+> mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/StackForge
 > ```
 
 ---
@@ -248,7 +248,7 @@ npm run dev
 You should see:
 ```
 ✅ MongoDB connected
-🚀 CloudForge API running on http://localhost:5000
+🚀 StackForge API running on http://localhost:5000
 ```
 
 **Terminal 2 — Frontend**
@@ -357,7 +357,7 @@ Authorization: Bearer <token>
 GET /api/health
 ```
 ```json
-{ "success": true, "message": "CloudForge API is running.", "timestamp": "2024-..." }
+{ "success": true, "message": "StackForge API is running.", "timestamp": "2024-..." }
 ```
 
 ---
@@ -370,8 +370,8 @@ GET /api/health
 | `/home` | HomePage | Public | Landing page |
 | `/login` | AuthPage | Public | Login form |
 | `/signup` | AuthPage | Public | Signup form |
-| `/canvas` | CloudForgeCanvas | **Protected** | New blank diagram |
-| `/canvas/:id` | CloudForgeCanvas | **Protected** | Load existing diagram |
+| `/canvas` | StackForgeCanvas | **Protected** | New blank diagram |
+| `/canvas/:id` | StackForgeCanvas | **Protected** | Load existing diagram |
 | `/diagrams` | MyDiagrams | **Protected** | All saved diagrams |
 
 > **Protected routes** — if you visit `/canvas` or `/diagrams` without being logged in, you are automatically redirected to `/login`. After logging in, you are sent back to the page you originally tried to visit.
@@ -552,7 +552,7 @@ Contributions are welcome! Here's how to get started:
 # 1. Fork the repo on GitHub
 
 # 2. Clone your fork
-git clone https://github.com/YOUR_USERNAME/cloudforge.git
+git clone https://github.com/JaiPrakashPS/StackForge.git
 
 # 3. Create a feature branch
 git checkout -b feature/your-feature-name
@@ -581,7 +581,7 @@ docs:     documentation updates
 This project is licensed under the **MIT License**.
 
 ```
-MIT License — Copyright (c) 2024 CloudForge
+MIT License — Copyright (c) 2024 StackForge
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software to use, copy, modify, merge, publish, distribute, and/or sell
@@ -599,6 +599,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
 **Built with React + ReactFlow + Express + MongoDB**
 
-[⭐ Star this repo](https://github.com/JaiPrakashPS/StackForge) · [🐛 Report a bug](https://github.com/YOUR_USERNAME/cloudforge/issues) · [💡 Request a feature](https://github.com/YOUR_USERNAME/cloudforge/issues)
+<!-- [⭐ Star this repo](https://github.com/JaiPrakashPS/StackForge) · [🐛 Report a bug](https://github.com/YOUR_USERNAME/StackForge/issues) · [💡 Request a feature](https://github.com/YOUR_USERNAME/StackForge/issues) -->
 
 </div>

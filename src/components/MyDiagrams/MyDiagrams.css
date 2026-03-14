@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg:          #f8fafc;
+  --surface:     #ffffff;
+  --surface-2:   #f1f5f9;
+  --border:      #e2e8f0;
+  --blue:        #2563eb;
+  --blue-light:  #eff6ff;
+  --blue-mid:    #3b82f6;
+  --blue-dark:   #1d4ed8;
+  --text:        #0f172a;
+  --text-2:      #334155;
+  --text-3:      #64748b;
+  --text-4:      #94a3b8;
+  --green:       #059669;
+  --red:         #dc2626;
+  --red-light:   #fef2f2;
+  --mono:        'JetBrains Mono', monospace;
+  --sans:        'Inter', sans-serif;
+  --radius:      10px;
+  --radius-lg:   14px;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.07);
+  --shadow:      0 4px 12px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg:   0 12px 32px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* ── Page wrapper ────────────────────────────────────────────────── */
+.md-wrap {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Navbar ──────────────────────────────────────────────────────── */
+.md-nav {
+  height: 62px;
+  background: rgba(255,255,255,0.90);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.md-brand {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; text-decoration: none;
+}
+.md-brand-mark {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+}
+.md-brand-name {
+  font-weight: 700; font-size: 16px; color: var(--text); letter-spacing: -0.4px;
+}
+.md-nav-right { display: flex; align-items: center; gap: 12px; }
+.md-nav-user-name { font-size: 14px; color: var(--text-3); font-weight: 500; }
+.md-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.md-btn-ghost {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-2); padding: 8px 16px; border-radius: var(--radius);
+  cursor: pointer; font-family: var(--sans); font-size: 13px; font-weight: 500;
+  transition: all 0.2s; box-shadow: var(--shadow-sm);
+}
+.md-btn-ghost:hover { border-color: #93c5fd; color: var(--blue); background: var(--blue-light); }
+
+.md-btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border: none; color: #fff; padding: 9px 20px; border-radius: var(--radius);
+  cursor: pointer; font-family: var(--sans); font-size: 14px; font-weight: 600;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.35); transition: all 0.2s;
+}
+.md-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.45); }
+
+/* ── Container ───────────────────────────────────────────────────── */
+.md-container { max-width: 1120px; margin: 0 auto; padding: 48px 28px; }
+
+/* ── Page header ─────────────────────────────────────────────────── */
+.md-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 36px; gap: 16px; flex-wrap: wrap;
+}
+.md-title {
+  font-size: 32px; font-weight: 800; letter-spacing: -1px;
+  line-height: 1; color: var(--text);
+}
+.md-subtitle { font-size: 14px; color: var(--text-3); margin-top: 6px; font-weight: 400; }
+
+/* ── Diagram grid ────────────────────────────────────────────────── */
+.md-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+}
+
+/* ── Diagram card ────────────────────────────────────────────────── */
+.md-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 22px;
+  cursor: pointer; transition: all 0.22s; position: relative;
+  overflow: hidden; box-shadow: var(--shadow-sm);
+}
+.md-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #2563eb, #0ea5e9);
+  opacity: 0; transition: opacity 0.25s;
+}
+.md-card:hover {
+  border-color: #93c5fd;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+}
+.md-card:hover::after { opacity: 1; }
+
+.md-card-top {
+  display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px;
+}
+.md-card-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--blue-light); border: 1px solid #bfdbfe;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.md-card-name {
+  font-size: 16px; font-weight: 700; color: var(--text);
+  margin-bottom: 4px; letter-spacing: -0.3px; line-height: 1.3;
+}
+.md-card-desc {
+  font-size: 12px; color: var(--text-3); line-height: 1.5;
+}
+
+/* ── Card stats ──────────────────────────────────────────────────── */
+.md-card-stats {
+  display: flex; gap: 16px; margin-top: 16px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.md-stat { display: flex; flex-direction: column; gap: 2px; }
+.md-stat-val {
+  font-size: 18px; font-weight: 800; color: var(--blue); letter-spacing: -0.5px;
+}
+.md-stat-key {
+  font-family: var(--mono); font-size: 10px; color: var(--text-4);
+  letter-spacing: 0.08em;
+}
+
+.md-card-footer {
+  display: flex; align-items: center; justify-content: space-between; margin-top: 16px;
+}
+.md-card-date { font-size: 12px; color: var(--text-4); }
+.md-card-actions { display: flex; gap: 6px; }
+
+.md-icon-btn {
+  width: 30px; height: 30px; border-radius: 7px;
+  border: 1px solid var(--border); background: var(--surface-2);
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; font-size: 14px; transition: all 0.15s; color: var(--text-3);
+}
+.md-icon-btn:hover { border-color: #fecaca; color: var(--red); background: var(--red-light); }
+.md-icon-btn-open:hover { border-color: #93c5fd; color: var(--blue); background: var(--blue-light); }
+
+/* ── Empty state ─────────────────────────────────────────────────── */
+.md-empty { text-align: center; padding: 80px 24px; }
+.md-empty-icon { font-size: 56px; opacity: 0.15; margin-bottom: 20px; }
+.md-empty-title {
+  font-size: 22px; font-weight: 700; color: var(--text-2); margin-bottom: 8px;
+}
+.md-empty-sub { font-size: 14px; color: var(--text-3); margin-bottom: 28px; }
+
+/* ── Delete confirm overlay ──────────────────────────────────────── */
+.md-delete-confirm {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(4px);
+  border-radius: var(--radius-lg);
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 14px; padding: 24px; z-index: 10;
+  border: 1.5px solid #fecaca;
+}
+.md-delete-confirm-text {
+  font-size: 14px; color: var(--text); text-align: center; line-height: 1.5;
+}
+.md-delete-confirm-actions { display: flex; gap: 10px; }
+.md-btn-danger {
+  padding: 8px 18px; border-radius: var(--radius); border: none;
+  background: var(--red); color: #fff; cursor: pointer;
+  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  transition: all 0.15s;
+}
+.md-btn-danger:hover { background: #b91c1c; }
+.md-btn-cancel {
+  padding: 8px 18px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text-2); cursor: pointer; font-family: var(--sans);
+  font-size: 13px; font-weight: 500; transition: all 0.15s;
+}
+.md-btn-cancel:hover { border-color: var(--border); background: var(--surface-2); }
+
+/* ── Loading spinner ─────────────────────────────────────────────── */
+.md-spinner {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 3px solid var(--border); border-top: 3px solid var(--blue);
+  animation: spin 0.75s linear infinite; margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.md-loading-text {
+  font-size: 14px; color: var(--text-3); margin-top: 16px; text-align: center;
+}
+
+/* ── Toast ───────────────────────────────────────────────────────── */
+.md-toast {
+  position: fixed; bottom: 28px; right: 28px; z-index: 300;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px 20px;
+  font-size: 13px; color: var(--text-2); font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  display: flex; align-items: center; gap: 10px;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }

@@ -1,0 +1,47 @@
+/* ComponentCard.css */
+
+.cf-comp-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: 9px;
+  cursor: grab; background: var(--surface);
+  border: 1.5px solid var(--border);
+  transition: all 0.15s; user-select: none;
+  position: relative; overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.cf-comp-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; border-radius: 2px 0 0 2px;
+  background: var(--card-color, #3b82f6);
+  opacity: 0.7;
+}
+.cf-comp-card:hover {
+  background: var(--surface-2);
+  border-color: var(--card-border-hover, #93c5fd);
+  transform: translateX(3px);
+  box-shadow: var(--shadow);
+}
+.cf-comp-card:active { cursor: grabbing; }
+
+.cf-comp-icon {
+  font-size: 22px; flex-shrink: 0; margin-left: 6px;
+}
+.cf-comp-info  { flex: 1; min-width: 0; }
+.cf-comp-name  {
+  font-size: 13px; font-weight: 600; color: var(--text-2);
+  margin-bottom: 2px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.cf-comp-meta  { display: flex; align-items: center; gap: 6px; }
+.cf-comp-cost  { font-family: var(--mono); font-size: 11px; font-weight: 600; }
+.cf-comp-sep   { color: var(--text-4); font-size: 11px; }
+.cf-comp-cat   { font-size: 11px; color: var(--text-4); }
+
+.cf-comp-grip  {
+  display: flex; flex-direction: column; gap: 3px;
+  opacity: 0.3; flex-shrink: 0;
+}
+.cf-comp-grip-row { display: flex; gap: 3px; }
+.cf-comp-grip-dot {
+  width: 3px; height: 3px; border-radius: 50%; background: var(--text-3);
+}

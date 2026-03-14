@@ -67,10 +67,9 @@ button:focus-visible {
   }
 } */
 
-body {
-  margin: 0;
+/* body {
+  margin: 0; */
   /* display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh; */
-}

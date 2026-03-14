@@ -1,0 +1,110 @@
+/* Sidebar.css */
+
+.cf-sidebar {
+  width: 272px; flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; overflow-x: hidden;
+  font-family: var(--sans);
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+}
+
+/* ── Logo section ────────────────────────────────────────────────── */
+.cf-sb-header {
+  padding: 16px 18px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.cf-sb-logo-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+}
+.cf-sb-logo-mark {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+}
+.cf-sb-logo-name { font-weight: 700; font-size: 15px; color: var(--text); letter-spacing: -0.3px; }
+.cf-sb-logo-sub  { font-family: var(--mono); font-size: 9px; color: var(--text-4); letter-spacing: 0.1em; }
+
+.cf-sb-diagram-name {
+  font-size: 12px; color: var(--text-2); font-weight: 500;
+  background: var(--surface-2); border-radius: 6px; padding: 6px 10px;
+  border: 1px solid var(--border); overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ── Cost summary ────────────────────────────────────────────────── */
+.cf-sb-cost {
+  margin: 14px 16px 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--green-light);
+  border: 1px solid #a7f3d0;
+}
+.cf-sb-cost-label {
+  font-family: var(--mono); font-size: 10px; color: #065f46;
+  letter-spacing: 0.1em; margin-bottom: 6px;
+}
+.cf-sb-cost-value {
+  font-size: 28px; font-weight: 800; color: var(--green);
+  letter-spacing: -1px; line-height: 1; margin-bottom: 6px;
+}
+.cf-sb-cost-meta { display: flex; gap: 10px; font-size: 12px; color: #065f46; }
+.cf-sb-cost-sep  { color: #a7f3d0; }
+
+/* ── Section labels ──────────────────────────────────────────────── */
+.cf-sb-label {
+  font-family: var(--mono); font-size: 10px; color: var(--text-4);
+  letter-spacing: 0.12em; margin-bottom: 8px; display: block;
+}
+
+/* ── Category filter ─────────────────────────────────────────────── */
+.cf-sb-filter { padding: 0 16px 12px; }
+.cf-sb-filter-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+.cf-sb-pill {
+  padding: 5px 10px; border-radius: 6px; font-size: 12px;
+  cursor: pointer; font-family: var(--sans); font-weight: 500; transition: all 0.15s;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text-3);
+}
+.cf-sb-pill:hover  { border-color: #93c5fd; color: var(--blue); background: var(--blue-light); }
+.cf-sb-pill-active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.cf-sb-pill-active:hover { background: var(--blue-dark); border-color: var(--blue-dark); color: #fff; }
+
+/* ── Divider ─────────────────────────────────────────────────────── */
+.cf-sb-divider { height: 1px; background: var(--border); margin: 0 16px 12px; }
+
+/* ── Component list ──────────────────────────────────────────────── */
+.cf-sb-components { padding: 0 16px; flex: 1; }
+.cf-sb-list { display: flex; flex-direction: column; gap: 5px; }
+
+/* ── Bottom actions ──────────────────────────────────────────────── */
+.cf-sb-actions {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 7px;
+  background: var(--surface);
+}
+.cf-sb-action-btn {
+  width: 100%; padding: 10px 14px; border-radius: var(--radius);
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s; text-align: left;
+  display: flex; align-items: center; gap: 8px;
+}
+.cf-sb-btn-terraform {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff; border: none;
+  box-shadow: 0 3px 10px rgba(37,99,235,0.3);
+}
+.cf-sb-btn-terraform:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(37,99,235,0.4); }
+.cf-sb-btn-json {
+  background: var(--surface-2); color: var(--text-2);
+  border: 1px solid var(--border);
+}
+.cf-sb-btn-json:hover { border-color: #93c5fd; color: var(--blue); background: var(--blue-light); }
+.cf-sb-btn-clear {
+  background: var(--surface-2); color: var(--text-3);
+  border: 1px solid var(--border);
+}
+.cf-sb-btn-clear:hover { border-color: #fecaca; color: var(--red); background: var(--red-light); }

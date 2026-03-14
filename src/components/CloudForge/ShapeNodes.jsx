@@ -1,228 +1,142 @@
 import { useState, useRef, useEffect } from "react";
 import { Handle, Position, useReactFlow, NodeResizer } from "reactflow";
+import "./ShapeNodes.css";
 
-// ── Shared resize handle styles ───────────────────────────────────────────────
-function resizerProps(color, selected) {
+function resizerProps(color, selected, minW=80, minH=60) {
   return {
-    isVisible: selected,
-    minWidth: 80,
-    minHeight: 60,
-    handleStyle: {
-      width: 10, height: 10, borderRadius: 3,
-      background: "#0f172a",
-      border: `2px solid ${color}`,
-    },
-    lineStyle: {
-      borderColor: `${color}66`,
-      borderWidth: 1,
-    },
+    isVisible: selected, minWidth: minW, minHeight: minH,
+    handleStyle: { width:10, height:10, borderRadius:3, background:"#fff", border:`2px solid ${color}` },
+    lineStyle: { borderColor:`${color}55`, borderWidth:1.5 },
   };
 }
-
-function handleStyle(color) {
-  return { background: color, border: "2px solid #0f172a", width: 8, height: 8 };
+function hs(color) {
+  return { background: color, border:"2px solid #fff", width:10, height:10, borderRadius:"50%", boxShadow:`0 0 0 1.5px ${color}44` };
 }
 
-// ── Inline editable label ─────────────────────────────────────────────────────
-function EditableLabel({ nodeId, value, color, fontSize = 13, placeholder = "Type here..." }) {
+function EditableLabel({ nodeId, value, color, fontSize=13, placeholder="Type here..." }) {
   const { setNodes } = useReactFlow();
   const [editing, setEditing] = useState(false);
   const [draft,   setDraft]   = useState(value || "");
-  const textareaRef           = useRef(null);
+  const ref = useRef(null);
 
   useEffect(() => { setDraft(value || ""); }, [value]);
-  useEffect(() => {
-    if (editing) { textareaRef.current?.focus(); textareaRef.current?.select(); }
-  }, [editing]);
+  useEffect(() => { if (editing) { ref.current?.focus(); ref.current?.select(); } }, [editing]);
 
   const commit = () => {
     setEditing(false);
-    setNodes((nds) =>
-      nds.map((n) => n.id === nodeId ? { ...n, data: { ...n.data, label: draft } } : n)
-    );
+    setNodes((nds) => nds.map((n) => n.id === nodeId ? { ...n, data: { ...n.data, label: draft } } : n));
   };
 
   if (editing) {
     return (
       <textarea
-        ref={textareaRef}
-        value={draft}
+        ref={ref} value={draft}
         onChange={(e) => setDraft(e.target.value)}
         onBlur={commit}
         onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Escape") commit(); }}
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
-        style={{
-          width: "100%", flex: 1,
-          background: "transparent", border: "none", outline: "none",
-          color: color || "#f1f5f9", fontSize,
-          fontFamily: "'JetBrains Mono', monospace",
-          resize: "none", textAlign: "center",
-          cursor: "text", lineHeight: 1.5,
-          padding: "2px 4px", caretColor: color || "#f1f5f9",
-        }}
+        className="cf-node-textarea"
+        style={{ fontSize, color: color || "#0f172a" }}
         placeholder={placeholder}
       />
     );
   }
-
   return (
     <div
       onDoubleClick={(e) => { e.stopPropagation(); setEditing(true); }}
-      style={{
-        color: draft ? (color || "#f1f5f9") : "#334155",
-        fontSize, fontFamily: "'JetBrains Mono', monospace",
-        textAlign: "center", cursor: "text",
-        minHeight: 22, lineHeight: 1.5,
-        wordBreak: "break-word", whiteSpace: "pre-wrap",
-        userSelect: "none", padding: "2px 4px", width: "100%",
-      }}
+      className="cf-node-label"
+      style={{ fontSize, color: draft ? (color || "#334155") : "#94a3b8" }}
       title="Double-click to edit"
     >
-      {draft || <span style={{ opacity: 0.35 }}>{placeholder}</span>}
+      {draft || <span className="cf-node-placeholder">{placeholder}</span>}
     </div>
   );
 }
 
-// ── Rectangle ─────────────────────────────────────────────────────────────────
 export function RectangleNode({ id, data, selected }) {
   const color = data.color || "#3b82f6";
   return (
     <>
-      <NodeResizer {...resizerProps(color, selected)} minWidth={100} minHeight={60} />
-      <div style={{
-        width: "100%", height: "100%",
-        background: `${color}11`,
-        border: `2px solid ${selected ? "#fff" : color}`,
-        borderRadius: 8,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "10px 14px",
-        boxShadow: selected ? `0 0 0 2px ${color}55` : `0 2px 12px ${color}22`,
-        transition: "border 0.15s, box-shadow 0.15s",
-        position: "relative", overflow: "hidden",
+      <NodeResizer {...resizerProps(color, selected, 100, 60)} />
+      <div className="cf-node-rect" style={{
+        background: `${color}0d`, border:`2px solid ${selected?"#64748b":color}44`,
+        boxShadow: selected ? `0 0 0 2px ${color}22` : `0 2px 8px ${color}10`,
       }}>
-        <Handle type="target" position={Position.Top}    style={handleStyle(color)} />
-        <Handle type="target" position={Position.Left}   style={handleStyle(color)} />
-        <Handle type="source" position={Position.Bottom} style={handleStyle(color)} />
-        <Handle type="source" position={Position.Right}  style={handleStyle(color)} />
+        <Handle type="target" position={Position.Top}    style={hs(color)} />
+        <Handle type="target" position={Position.Left}   style={hs(color)} />
+        <Handle type="source" position={Position.Bottom} style={hs(color)} />
+        <Handle type="source" position={Position.Right}  style={hs(color)} />
         <EditableLabel nodeId={id} value={data.label} color={color} placeholder="Label..." />
       </div>
     </>
   );
 }
 
-// ── Circle ────────────────────────────────────────────────────────────────────
 export function CircleNode({ id, data, selected }) {
   const color = data.color || "#8b5cf6";
   return (
     <>
-      <NodeResizer {...resizerProps(color, selected)} minWidth={80} minHeight={80} />
-      <div style={{
-        width: "100%", height: "100%",
-        borderRadius: "50%",
-        background: `${color}11`,
-        border: `2px solid ${selected ? "#fff" : color}`,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        boxShadow: selected ? `0 0 0 2px ${color}55` : `0 2px 12px ${color}22`,
-        transition: "border 0.15s, box-shadow 0.15s",
-        position: "relative", overflow: "hidden",
+      <NodeResizer {...resizerProps(color, selected, 80, 80)} />
+      <div className="cf-node-circle" style={{
+        background:`${color}0d`, border:`2px solid ${selected?"#64748b":color}44`,
+        boxShadow: selected ? `0 0 0 2px ${color}22` : `0 2px 8px ${color}10`,
       }}>
-        <Handle type="target" position={Position.Top}    style={handleStyle(color)} />
-        <Handle type="target" position={Position.Left}   style={handleStyle(color)} />
-        <Handle type="source" position={Position.Bottom} style={handleStyle(color)} />
-        <Handle type="source" position={Position.Right}  style={handleStyle(color)} />
+        <Handle type="target" position={Position.Top}    style={hs(color)} />
+        <Handle type="target" position={Position.Left}   style={hs(color)} />
+        <Handle type="source" position={Position.Bottom} style={hs(color)} />
+        <Handle type="source" position={Position.Right}  style={hs(color)} />
         <EditableLabel nodeId={id} value={data.label} color={color} fontSize={11} placeholder="Label..." />
       </div>
     </>
   );
 }
 
-// ── Text ──────────────────────────────────────────────────────────────────────
 export function TextNode({ id, data, selected }) {
-  const color = data.color || "#f1f5f9";
+  const color = data.color || "#334155";
   return (
     <>
-      <NodeResizer {...resizerProps("#3b82f6", selected)} minWidth={80} minHeight={30} />
-      <div style={{
-        width: "100%", height: "100%",
-        border: selected ? "1px dashed #3b82f666" : "1px dashed transparent",
-        borderRadius: 4, padding: "4px 8px",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        transition: "border 0.15s",
-        overflow: "hidden",
-      }}>
-        <EditableLabel
-          nodeId={id} value={data.label} color={color}
-          fontSize={data.fontSize || 14}
-          placeholder="Double-click to type..."
-        />
+      <NodeResizer {...resizerProps("#3b82f6", selected, 80, 30)} />
+      <div className="cf-node-text" style={{ border: selected ? "1.5px dashed #93c5fd" : "1.5px dashed transparent" }}>
+        <EditableLabel nodeId={id} value={data.label} color={color} fontSize={data.fontSize||14} placeholder="Double-click to type..." />
       </div>
     </>
   );
 }
 
-// ── Frame ─────────────────────────────────────────────────────────────────────
 export function FrameNode({ id, data, selected }) {
-  const color = data.color || "#475569";
+  const color = data.color || "#64748b";
   return (
     <>
-      <NodeResizer {...resizerProps(color, selected)} minWidth={160} minHeight={120} />
-      <div style={{
-        width: "100%", height: "100%",
-        border: `2px dashed ${selected ? "#94a3b8" : color}`,
-        borderRadius: 10,
-        background: `${color}08`,
-        position: "relative",
-        padding: "28px 12px 12px",
-        overflow: "hidden",
+      <NodeResizer {...resizerProps(color, selected, 160, 120)} />
+      <div className="cf-node-frame" style={{
+        border:`2px dashed ${selected?"#94a3b8":color}55`, background:`${color}06`,
       }}>
-        <div style={{
-          position: "absolute", top: 0, left: 0, right: 0,
-          background: `${color}22`,
-          borderRadius: "8px 8px 0 0",
-          padding: "3px 12px",
-          borderBottom: `1px solid ${color}44`,
-        }}>
+        <div className="cf-node-frame-header" style={{ background:`${color}12`, borderBottomColor:`${color}33` }}>
           <EditableLabel nodeId={id} value={data.label} color={color} fontSize={11} placeholder="Frame name" />
         </div>
-        <Handle type="target" position={Position.Top}    style={handleStyle(color)} />
-        <Handle type="target" position={Position.Left}   style={handleStyle(color)} />
-        <Handle type="source" position={Position.Bottom} style={handleStyle(color)} />
-        <Handle type="source" position={Position.Right}  style={handleStyle(color)} />
+        <Handle type="target" position={Position.Top}    style={hs(color)} />
+        <Handle type="target" position={Position.Left}   style={hs(color)} />
+        <Handle type="source" position={Position.Bottom} style={hs(color)} />
+        <Handle type="source" position={Position.Right}  style={hs(color)} />
       </div>
     </>
   );
 }
 
-// ── Comment ───────────────────────────────────────────────────────────────────
 export function CommentNode({ id, data, selected }) {
-  const color = "#fbbf24";
+  const color = "#f59e0b";
   return (
     <>
-      <NodeResizer {...resizerProps(color, selected)} minWidth={120} minHeight={70} />
-      <div style={{
-        width: "100%", height: "100%",
-        background: "#fbbf2415",
-        border: `2px solid ${selected ? "#fde68a" : color}`,
-        borderRadius: "8px 8px 8px 0px",
-        padding: "8px 12px 10px",
-        position: "relative",
-        boxShadow: selected ? `0 0 0 2px ${color}44` : `0 2px 12px ${color}22`,
-        transition: "border 0.15s, box-shadow 0.15s",
-        display: "flex", flexDirection: "column",
-        overflow: "hidden",
+      <NodeResizer {...resizerProps(color, selected, 120, 70)} />
+      <div className="cf-node-comment" style={{
+        background:"#fffbeb", border:`2px solid ${selected?"#fbbf24":"#fde68a"}`,
+        boxShadow: selected ? "0 0 0 2px #fde68a44" : "0 2px 8px #f59e0b10",
       }}>
-        <div style={{
-          position: "absolute", bottom: -10, left: 0,
-          width: 0, height: 0,
-          borderLeft: "10px solid transparent",
-          borderTop: `10px solid ${color}`,
-        }} />
-        <div style={{ fontSize: 9, color: "#fbbf24", marginBottom: 4, opacity: 0.5, letterSpacing: "0.08em", flexShrink: 0 }}>
-          💬 COMMENT
-        </div>
-        <EditableLabel nodeId={id} value={data.label} color="#fde68a" fontSize={11} placeholder="Add a comment..." />
-        <Handle type="source" position={Position.Right} style={handleStyle(color)} />
+        <div className="cf-node-comment-tail" style={{ borderTop:`10px solid #fde68a` }} />
+        <div className="cf-node-comment-badge" style={{ color:"#d97706" }}>💬 COMMENT</div>
+        <EditableLabel nodeId={id} value={data.label} color="#92400e" fontSize={11} placeholder="Add a comment..." />
+        <Handle type="source" position={Position.Right} style={hs(color)} />
       </div>
     </>
   );

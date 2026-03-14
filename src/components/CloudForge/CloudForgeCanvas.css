@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg:          #f1f5f9;
+  --surface:     #ffffff;
+  --surface-2:   #f8fafc;
+  --border:      #e2e8f0;
+  --border-2:    #cbd5e1;
+  --blue:        #2563eb;
+  --blue-light:  #eff6ff;
+  --blue-mid:    #3b82f6;
+  --blue-dark:   #1d4ed8;
+  --text:        #0f172a;
+  --text-2:      #334155;
+  --text-3:      #64748b;
+  --text-4:      #94a3b8;
+  --green:       #059669;
+  --green-light: #ecfdf5;
+  --red:         #dc2626;
+  --red-light:   #fef2f2;
+  --mono:        'JetBrains Mono', monospace;
+  --sans:        'Inter', sans-serif;
+  --radius:      8px;
+  --radius-lg:   12px;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.07);
+  --shadow:      0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg:   0 12px 32px rgba(0,0,0,0.12);
+}
+
+/* ── Canvas outer wrapper ────────────────────────────────────────── */
+.cf-canvas-wrap {
+  display: flex; flex-direction: column;
+  height: 100vh; width: 100vw;
+  background: var(--bg);
+  font-family: var(--sans);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Top Navbar ──────────────────────────────────────────────────── */
+.cf-navbar {
+  height: 54px; flex-shrink: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; z-index: 100; gap: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.cf-navbar-left  { display: flex; align-items: center; gap: 10px; }
+.cf-navbar-center { display: flex; align-items: center; }
+.cf-navbar-right { display: flex; align-items: center; gap: 8px; }
+
+/* ── Navbar: sidebar toggle ──────────────────────────────────────── */
+.cf-nav-toggle {
+  width: 32px; height: 32px; border-radius: var(--radius);
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-3); cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.cf-nav-toggle:hover { border-color: #93c5fd; color: var(--blue); background: var(--blue-light); }
+
+/* ── Navbar: logo ────────────────────────────────────────────────── */
+.cf-nav-logo { display: flex; align-items: center; gap: 8px; }
+.cf-nav-logo-mark {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; box-shadow: 0 3px 10px rgba(37,99,235,0.3);
+}
+.cf-nav-logo-name {
+  font-weight: 700; font-size: 14px; color: var(--text); letter-spacing: -0.3px;
+}
+
+/* ── Navbar: divider ─────────────────────────────────────────────── */
+.cf-nav-divider { width: 1px; height: 20px; background: var(--border); }
+
+/* ── Navbar: diagram name pill ───────────────────────────────────── */
+.cf-nav-diagram-name {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 5px 12px;
+  font-size: 13px; color: var(--text-2); font-weight: 500;
+  max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ── Navbar: cost badge ──────────────────────────────────────────── */
+.cf-nav-cost {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--green-light); border: 1px solid #a7f3d0;
+  border-radius: var(--radius); padding: 6px 14px;
+}
+.cf-nav-cost-label { font-family: var(--mono); font-size: 11px; color: #065f46; letter-spacing: 0.06em; }
+.cf-nav-cost-value { font-size: 15px; font-weight: 800; color: var(--green); letter-spacing: -0.5px; }
+.cf-nav-cost-sep   { color: #a7f3d0; font-size: 13px; }
+.cf-nav-cost-meta  { font-size: 12px; color: #065f46; }
+
+/* ── Navbar: buttons ─────────────────────────────────────────────── */
+.cf-nav-btn-ghost {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: var(--radius);
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-2); cursor: pointer; font-family: var(--sans);
+  font-size: 13px; font-weight: 500; transition: all 0.15s;
+}
+.cf-nav-btn-ghost:hover { border-color: #93c5fd; color: var(--blue); background: var(--blue-light); }
+
+.cf-nav-btn-save {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 20px; border-radius: var(--radius); border: none;
+  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  color: #fff; cursor: pointer; transition: all 0.2s; letter-spacing: 0.01em;
+}
+.cf-nav-btn-save-idle   { background: linear-gradient(135deg,#2563eb,#1d4ed8); box-shadow: 0 4px 14px rgba(37,99,235,0.35); }
+.cf-nav-btn-save-saving { background: linear-gradient(135deg,#4b6fbd,#3b5fc0); opacity: 0.75; cursor: not-allowed; }
+.cf-nav-btn-save-saved  { background: linear-gradient(135deg,#059669,#047857); box-shadow: 0 4px 14px rgba(5,150,105,0.35); }
+.cf-nav-btn-save-error  { background: linear-gradient(135deg,#dc2626,#b91c1c); box-shadow: 0 4px 14px rgba(220,38,38,0.35); }
+.cf-nav-btn-save-idle:hover  { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.45); }
+.cf-nav-btn-save-saved:hover { transform: translateY(-1px); }
+
+/* ── Navbar: user avatar ─────────────────────────────────────────── */
+.cf-nav-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+}
+.cf-nav-username { font-size: 13px; color: var(--text-3); font-weight: 500; }
+
+.cf-nav-btn-logout {
+  padding: 7px 12px; border-radius: var(--radius);
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-3); cursor: pointer; font-family: var(--sans);
+  font-size: 12px; font-weight: 500; transition: all 0.15s;
+}
+.cf-nav-btn-logout:hover { border-color: #fecaca; color: var(--red); background: var(--red-light); }
+
+/* ── Main area (sidebar + canvas) ────────────────────────────────── */
+.cf-main { display: flex; flex: 1; overflow: hidden; }
+
+/* ── Canvas pane wrapper ─────────────────────────────────────────── */
+.cf-canvas-pane { flex: 1; position: relative; }
+
+/* ── Empty state ─────────────────────────────────────────────────── */
+.cf-empty-state {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; z-index: 0; pointer-events: none;
+}
+.cf-empty-icon   { font-size: 64px; opacity: 0.08; margin-bottom: 16px; }
+.cf-empty-title  { font-size: 16px; font-weight: 600; color: var(--text-4); margin-bottom: 6px; }
+.cf-empty-hint   { font-family: var(--mono); font-size: 12px; color: var(--text-4); }
+
+/* ── Color palette ───────────────────────────────────────────────── */
+.cf-palette {
+  position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+  z-index: 20; display: flex; gap: 8px; align-items: center;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 40px; padding: 8px 18px;
+  box-shadow: var(--shadow-lg);
+}
+.cf-palette-label {
+  font-family: var(--mono); font-size: 10px; color: var(--text-4);
+  letter-spacing: 0.1em; margin-right: 4px;
+}
+.cf-palette-dot {
+  border-radius: 50%; cursor: pointer; transition: all 0.15s;
+  width: 22px; height: 22px;
+}
+
+/* ── Tool hint bar ───────────────────────────────────────────────── */
+.cf-hint-bar {
+  position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 7px 18px; font-size: 13px; color: var(--text-3);
+  pointer-events: none; display: flex; align-items: center; gap: 10px;
+  box-shadow: var(--shadow); white-space: nowrap;
+}
+.cf-hint-tool { color: var(--blue); font-weight: 700; font-family: var(--mono); font-size: 12px; }
+.cf-hint-sep  { color: var(--border-2); }
+
+/* ── Save Modal ──────────────────────────────────────────────────── */
+.cf-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,0.4);
+  backdrop-filter: blur(6px);
+  z-index: 1000; display: flex;
+  align-items: center; justify-content: center;
+}
+.cf-modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px; width: 460px; max-width: 92vw;
+  box-shadow: var(--shadow-lg);
+  animation: modalIn 0.2s ease;
+}
+@keyframes modalIn { from { opacity:0; transform:scale(0.97) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
+
+.cf-modal-title {
+  font-size: 20px; font-weight: 800; color: var(--text);
+  letter-spacing: -0.5px; margin-bottom: 6px;
+}
+.cf-modal-sub { font-size: 14px; color: var(--text-3); margin-bottom: 24px; }
+.cf-modal-fields { display: flex; flex-direction: column; gap: 16px; }
+.cf-modal-label {
+  font-family: var(--mono); font-size: 10px; color: var(--text-3);
+  letter-spacing: 0.1em; margin-bottom: 6px; display: block;
+}
+.cf-modal-input {
+  width: 100%; padding: 11px 14px; border-radius: var(--radius);
+  background: var(--surface); border: 1.5px solid var(--border);
+  color: var(--text); font-family: var(--sans); font-size: 14px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.cf-modal-input:focus {
+  border-color: var(--blue-mid);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+}
+.cf-modal-input::placeholder { color: var(--text-4); }
+.cf-modal-actions { display: flex; gap: 10px; margin-top: 4px; }
+.cf-modal-btn-save {
+  flex: 1; padding: 11px; border-radius: var(--radius); border: none;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff; font-size: 14px; font-weight: 600;
+  font-family: var(--sans); cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.35); transition: all 0.2s;
+}
+.cf-modal-btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.45); }
+.cf-modal-btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.cf-modal-btn-cancel {
+  padding: 11px 22px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--surface-2);
+  color: var(--text-2); font-size: 14px; font-weight: 500;
+  font-family: var(--sans); cursor: pointer; transition: all 0.15s;
+}
+.cf-modal-btn-cancel:hover { background: var(--surface); border-color: var(--border-2); }
+
+/* ── ReactFlow overrides ─────────────────────────────────────────── */
+.react-flow__background { background: var(--bg); }
+.react-flow__controls {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow) !important;
+  overflow: hidden;
+}
+.react-flow__controls-button {
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text-2) !important;
+}
+.react-flow__controls-button:hover { background: var(--surface-2) !important; color: var(--blue) !important; }
+.react-flow__minimap {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow) !important;
+}

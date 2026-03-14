@@ -208,7 +208,7 @@ Then fill in the values:
 
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/StackForge
+MONGO_URI=your_uri
 JWT_SECRET=your_super_secret_key_at_least_32_characters_long
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5173
@@ -217,7 +217,7 @@ CLIENT_URL=http://localhost:5173
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `PORT` | Port the Express server listens on | `5000` |
-| `MONGO_URI` | MongoDB connection string | `mongodb://localhost:27017/StackForge` |
+| `MONGO_URI` | MongoDB connection string | `your_uri` |
 | `JWT_SECRET` | Secret key for signing JWT tokens — keep this private | Any long random string |
 | `JWT_EXPIRES_IN` | How long login sessions last | `7d` |
 | `CLIENT_URL` | URL of your React frontend — used for CORS | `http://localhost:5173` |

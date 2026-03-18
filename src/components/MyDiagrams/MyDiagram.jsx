@@ -120,7 +120,23 @@ export default function MyDiagrams() {
                       <div className="md-card-icon">🗺</div>
                     </div>
                     <div style={{ flex:1 }}>
-                      <div className="md-card-name">{d.name}</div>
+                      <div className="md-card-name">
+                        {d.name}
+                        {!d.isOwner && (
+                          <span style={{
+                            fontSize:10, fontFamily:"'JetBrains Mono',monospace",
+                            background:"#f5f3ff", color:"#7c3aed",
+                            border:"1px solid #c4b5fd", borderRadius:4,
+                            padding:"1px 6px", marginLeft:6, fontWeight:600,
+                            verticalAlign:"middle", letterSpacing:"0.04em",
+                          }}>SHARED</span>
+                        )}
+                      </div>
+                      {!d.isOwner && (
+                        <div style={{ fontSize:11, color:"#94a3b8", marginTop:2 }}>
+                          by {d.ownerName}
+                        </div>
+                      )}
                       {d.description && <div className="md-card-desc">{d.description}</div>}
                     </div>
                   </div>
@@ -139,8 +155,10 @@ export default function MyDiagrams() {
                   <div className="md-card-footer">
                     <span className="md-card-date">Updated {formatDate(d.updatedAt)}</span>
                     <div className="md-card-actions" onClick={(e) => e.stopPropagation()}>
-                      <button className="md-icon-btn" title="Open" onClick={() => openDiagram(d._id)}>↗</button>
-                      <button className="md-icon-btn" title="Delete" onClick={() => setConfirmId(d._id)}>🗑</button>
+                      <button className="md-icon-btn md-icon-btn-open" title="Open" onClick={() => openDiagram(d._id)}>↗</button>
+                      {d.isOwner && (
+                        <button className="md-icon-btn" title="Delete" onClick={() => setConfirmId(d._id)}>🗑</button>
+                      )}
                     </div>
                   </div>
                 </div>

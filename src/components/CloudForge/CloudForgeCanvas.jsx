@@ -22,7 +22,9 @@ import { RectangleNode, CircleNode, TextNode, FrameNode, CommentNode } from "./S
 import { COMPONENTS, COLOR_MAP } from "./constants";
 import { scanDiagram } from "./scanner";
 import ScanPanel from "./ScanPanel";
-import "./StackForgeCanvas.css";
+import CollabPanel from "./CollabPanel";
+import { useCollaboration } from "../../hooks/useCollaboration";
+import "./CloudForgeCanvas.css";
 
 const SHAPE_COLORS = ["#2563eb","#7c3aed","#059669","#d97706","#dc2626","#db2777","#0891b2"];
 
@@ -61,8 +63,27 @@ export default function StackForgeCanvas() {
   const [isScanning, setIsScanning]     = useState(false);
   const [scanResult, setScanResult]     = useState(null);
   const [highlightedNodes, setHighlightedNodes] = useState([]);
+  const [collabOpen, setCollabOpen]             = useState(false);
 
-  // Keyboard shortcuts
+  // ── Collaboration (Socket.IO) ────────────────────────────────────────────────
+  const {
+    connected: collabConnected,
+    presence,
+    cursors,
+    suppressRef,
+    emitNodes,
+    emitEdges,
+    emitPencil,
+    emitCursor,
+  } = useCollaboration({
+    diagramId,
+    user,
+    onNodesUpdate:  (n) => setNodes(n),
+    onEdgesUpdate:  (e) => setEdges(e),
+    onPencilUpdate: (p) => setPencilLines(p),
+  });
+
+  // ── Keyboard shortcuts
   useEffect(() => {
     const map = { s:"select",r:"rectangle",o:"circle",a:"arrow",l:"line",d:"pencil",t:"text",f:"frame",c:"comment" };
     const handler = (e) => {
@@ -85,6 +106,29 @@ export default function StackForgeCanvas() {
       })
       .catch(() => {});
   }, [diagramId]);
+
+  // ── Emit canvas changes to collaborators ────────────────────────────────────
+  // suppressRef is true when a remote update is being applied — skip emit to
+  // prevent echo loops. We use a debounce ref to batch rapid changes.
+  const emitDebounce = useRef(null);
+
+  const handleNodesChange = useCallback((changes) => {
+    onNodesChange(changes);
+    if (suppressRef.current) return; // remote update — don't echo
+    clearTimeout(emitDebounce.current);
+    emitDebounce.current = setTimeout(() => {
+      setNodes(nds => { emitNodes(nds); return nds; });
+    }, 40);
+  }, [onNodesChange, emitNodes, suppressRef]);
+
+  const handleEdgesChange = useCallback((changes) => {
+    onEdgesChange(changes);
+    if (suppressRef.current) return;
+    clearTimeout(emitDebounce.current);
+    emitDebounce.current = setTimeout(() => {
+      setEdges(eds => { emitEdges(eds); return eds; });
+    }, 40);
+  }, [onEdgesChange, emitEdges, suppressRef]);
 
   const onConnect = useCallback((params) => {
     const isLine = activeTool === "line";
@@ -115,7 +159,7 @@ export default function StackForgeCanvas() {
 
   const onDrop = useCallback((e) => {
     e.preventDefault();
-    const type = e.dataTransfer.getData("application/stackforge");
+    const type = e.dataTransfer.getData("application/cloudforge");
     if (!type || !rfInstance) return;
     const bounds = wrapperRef.current.getBoundingClientRect();
     const position = rfInstance.project({ x: e.clientX - bounds.left, y: e.clientY - bounds.top });
@@ -164,7 +208,13 @@ export default function StackForgeCanvas() {
   const onMouseUpCanvas = () => {
     if (!isDrawing) return;
     setIsDrawing(false);
-    if (pencilPath.length > 1) setPencilLines((ls) => [...ls, { points: pencilPath, color: activeColor }]);
+    if (pencilPath.length > 1) {
+      setPencilLines((ls) => {
+        const updated = [...ls, { points: pencilPath, color: activeColor }];
+        emitPencil(updated);
+        return updated;
+      });
+    }
     setPencilPath([]);
     setActiveTool("select");
   };
@@ -288,17 +338,36 @@ export default function StackForgeCanvas() {
             ＋ New
           </button>
           <button
-            className={`cf-nav-btn-scan${scanResult ? (scanResult.summary.errors > 0 ? " cf-nav-btn-scan-error" : scanResult.summary.warnings > 0 ? " cf-nav-btn-scan-warn" : " cf-nav-btn-scan-pass") : ""}`}
-            onClick={handleScan}
+            className={`cf-nav-btn-collab${collabOpen ? " cf-nav-btn-collab-active" : ""}${collabConnected && !collabOpen ? " cf-nav-btn-collab-live" : ""}`}
+            onClick={() => {
+              setCollabOpen(o => !o);
+              if (scanOpen) setScanOpen(false); // close scan when opening collab
+            }}
+            title="Collaborate"
+          >
+            👥 Collaborate
+            {presence.length > 0 && (
+              <span className="cf-nav-collab-badge">{presence.length + 1}</span>
+            )}
+          </button>
+          <button
+            className={`cf-nav-btn-scan${scanOpen ? " cf-nav-btn-scan-active" : ""}${scanResult && !scanOpen ? (scanResult.summary.errors > 0 ? " cf-nav-btn-scan-error" : scanResult.summary.warnings > 0 ? " cf-nav-btn-scan-warn" : " cf-nav-btn-scan-pass") : ""}`}
+            onClick={() => {
+              if (scanOpen) {
+                setScanOpen(false); // close if already open
+              } else {
+                handleScan(); // open and run scan
+              }
+            }}
           >
             🔍 Scan
-            {scanResult && scanResult.summary.errors > 0 && (
+            {scanResult && !scanOpen && scanResult.summary.errors > 0 && (
               <span className="cf-nav-scan-badge cf-nav-scan-badge-error">{scanResult.summary.errors}</span>
             )}
-            {scanResult && scanResult.summary.errors === 0 && scanResult.summary.warnings > 0 && (
+            {scanResult && !scanOpen && scanResult.summary.errors === 0 && scanResult.summary.warnings > 0 && (
               <span className="cf-nav-scan-badge cf-nav-scan-badge-warn">{scanResult.summary.warnings}</span>
             )}
-            {scanResult && scanResult.summary.errors === 0 && scanResult.summary.warnings === 0 && scanResult.summary.total === 0 && (
+            {scanResult && !scanOpen && scanResult.summary.errors === 0 && scanResult.summary.warnings === 0 && scanResult.summary.total === 0 && (
               <span className="cf-nav-scan-badge cf-nav-scan-badge-pass">✓</span>
             )}
           </button>
@@ -391,7 +460,11 @@ export default function StackForgeCanvas() {
           className="cf-canvas-pane"
           style={{ cursor: cursorMap[activeTool] || "default" }}
           onMouseDown={onMouseDownCanvas}
-          onMouseMove={onMouseMoveCanvas}
+          onMouseMove={(e) => {
+            onMouseMoveCanvas(e);
+            const bounds = wrapperRef.current?.getBoundingClientRect();
+            if (bounds) emitCursor(e.clientX - bounds.left, e.clientY - bounds.top);
+          }}
           onMouseUp={onMouseUpCanvas}
         >
           <DrawingToolbar activeTool={activeTool} onToolChange={setActiveTool} />
@@ -447,7 +520,7 @@ export default function StackForgeCanvas() {
 
           <ReactFlow
             nodes={nodes} edges={edges}
-            onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}
+            onNodesChange={handleNodesChange} onEdgesChange={handleEdgesChange}
             onConnect={onConnect} onInit={setRfInstance}
             onDrop={onDrop} onDragOver={onDragOver} onPaneClick={onPaneClick}
             nodeTypes={nodeTypes} fitView
@@ -485,18 +558,44 @@ export default function StackForgeCanvas() {
               </div>
             </Panel>
           </ReactFlow>
+
+          {/* ── Scan Panel — overlays canvas ── */}
+          <ScanPanel
+            isOpen={scanOpen}
+            onClose={() => setScanOpen(false)}
+            scanResult={scanResult}
+            isScanning={isScanning}
+            onScan={handleScan}
+            onNewDiagram={handleNewDiagram}
+            onHighlightNodes={handleHighlightNodes}
+            highlightedNodes={highlightedNodes}
+          />
+
+          {/* ── Collaboration Panel — overlays canvas ── */}
+          <CollabPanel
+            isOpen={collabOpen}
+            onClose={() => setCollabOpen(false)}
+            diagramId={diagramId}
+            currentUser={user}
+            presence={presence}
+          />
+
+          {/* ── Live cursors ── */}
+          {Object.entries(cursors).map(([sid, c]) => (
+            <div
+              key={sid}
+              className="cf-live-cursor"
+              style={{ left: c.x, top: c.y }}
+            >
+              <svg width="16" height="20" viewBox="0 0 16 20">
+                <path d="M0 0 L0 16 L4 12 L7 19 L9 18 L6 11 L11 11 Z" fill={c.color} stroke="#fff" strokeWidth="1"/>
+              </svg>
+              <span className="cf-cursor-label" style={{ background: c.color }}>
+                {c.firstName}
+              </span>
+            </div>
+          ))}
         </div>
-        {/* ── Scan Panel ── */}
-        <ScanPanel
-          isOpen={scanOpen}
-          onClose={() => setScanOpen(false)}
-          scanResult={scanResult}
-          isScanning={isScanning}
-          onScan={handleScan}
-          onNewDiagram={handleNewDiagram}
-          onHighlightNodes={handleHighlightNodes}
-          highlightedNodes={highlightedNodes}
-        />
       </div>
     </div>
   );

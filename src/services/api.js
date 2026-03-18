@@ -32,3 +32,10 @@ export const diagramAPI = {
   update:  (id, body)   => request(`/diagrams/${id}`, { method: "PUT",    body: JSON.stringify(body) }),
   delete:  (id)         => request(`/diagrams/${id}`, { method: "DELETE" }),
 };
+
+// ── Collaboration ─────────────────────────────────────────────────────────────
+export const collaborationAPI = {
+  getCollaborators: (diagramId)              => request(`/diagrams/${diagramId}/collaborators`),
+  addCollaborator:  (diagramId, body)        => request(`/diagrams/${diagramId}/collaborators`, { method: "POST", body: JSON.stringify(body) }),
+  removeCollaborator: (diagramId, userId)    => request(`/diagrams/${diagramId}/collaborators/${userId}`, { method: "DELETE" }),
+};

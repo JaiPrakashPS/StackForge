@@ -141,7 +141,12 @@
 .cf-main { display: flex; flex: 1; overflow: hidden; }
 
 /* ── Canvas pane wrapper ─────────────────────────────────────────── */
-.cf-canvas-pane { flex: 1; position: relative; }
+.cf-canvas-pane {
+  flex: 1;
+  position: relative;
+  /* NO padding here — toolbar sits OVER the canvas with pointer-events:none on its container */
+  overflow: hidden;
+}
 
 /* ── Empty state ─────────────────────────────────────────────────── */
 .cf-empty-state {
@@ -160,6 +165,8 @@
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 40px; padding: 8px 18px;
   box-shadow: var(--shadow-lg);
+  /* Allow drag-over to pass through the gap between palette and canvas edge */
+  pointer-events: all;
 }
 .cf-palette-label {
   font-family: var(--mono); font-size: 10px; color: var(--text-4);
@@ -248,7 +255,10 @@
   border-radius: 10px !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.25) !important;
   overflow: hidden;
-  bottom: 100px !important;
+  /* Offset from bottom-left; clear the drawing toolbar (≈70px wide) */
+  left: 80px !important;
+  bottom: 24px !important;
+  top: auto !important;
 }
 .react-flow__controls-button {
   background: #1e293b !important;
@@ -374,7 +384,8 @@
   font-size: 13px; font-weight: 600; transition: all 0.15s;
   position: relative;
 }
-.cf-nav-btn-scan:hover       { border-color: #93c5fd; color: var(--blue); background: var(--blue-light); }
+.cf-nav-btn-scan:hover        { border-color: #93c5fd; color: var(--blue); background: var(--blue-light); }
+.cf-nav-btn-scan-active      { border-color: #2563eb !important; color: #fff !important; background: #2563eb !important; }
 .cf-nav-btn-scan-error       { border-color: #fecaca !important; color: #dc2626 !important; background: #fef2f2 !important; }
 .cf-nav-btn-scan-warn        { border-color: #fde68a !important; color: #d97706 !important; background: #fffbeb !important; }
 .cf-nav-btn-scan-pass        { border-color: #a7f3d0 !important; color: #059669 !important; background: #ecfdf5 !important; }
@@ -394,4 +405,49 @@
 .cf-node-highlighted .react-flow__node {
   outline: 2px solid #2563eb;
   outline-offset: 3px;
+}
+
+/* ── Navbar: Collaborate button ──────────────────────────────────── */
+.cf-nav-btn-collab {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: var(--radius);
+  background: var(--surface-2); border: 1.5px solid var(--border);
+  color: var(--text-2); cursor: pointer; font-family: var(--sans);
+  font-size: 13px; font-weight: 600; transition: all 0.15s;
+  position: relative;
+}
+.cf-nav-btn-collab:hover  { border-color: #c4b5fd; color: #7c3aed; background: #f5f3ff; }
+.cf-nav-btn-collab-active { border-color: #7c3aed !important; color: #fff !important; background: #7c3aed !important; }
+.cf-nav-btn-collab-live   { border-color: #a7f3d0 !important; color: #059669 !important; background: #ecfdf5 !important; }
+
+.cf-nav-collab-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; border-radius: 9px; padding: 0 4px;
+  background: #7c3aed; color: #fff;
+  font-size: 10px; font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+}
+.cf-nav-btn-collab-live .cf-nav-collab-badge { background: #059669; }
+
+/* ── Live cursor overlays ────────────────────────────────────────── */
+.cf-live-cursor {
+  position: absolute;
+  pointer-events: none;
+  z-index: 999;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  transform: translate(0, 0);
+  transition: left 0.05s linear, top 0.05s linear;
+}
+.cf-cursor-arrow {
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
+}
+.cf-cursor-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 600; color: #fff;
+  padding: 2px 8px; border-radius: 10px;
+  white-space: nowrap; margin-top: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }

@@ -1,25 +1,23 @@
 import express from "express";
 import {
-  getDiagrams,
-  getDiagram,
-  createDiagram,
-  updateDiagram,
-  deleteDiagram,
+  getDiagrams, getDiagram, createDiagram, updateDiagram, deleteDiagram,
 } from "../controllers/diagramController.js";
 import protect from "../middleware/auth.js";
+import collaborationRouter from "./collaboration.js";
 
 const router = express.Router();
-
-// All diagram routes require authentication
 router.use(protect);
 
 router.route("/")
-  .get(getDiagrams)       // GET  /api/diagrams
-  .post(createDiagram);   // POST /api/diagrams
+  .get(getDiagrams)
+  .post(createDiagram);
 
 router.route("/:id")
-  .get(getDiagram)        // GET    /api/diagrams/:id
-  .put(updateDiagram)     // PUT    /api/diagrams/:id
-  .delete(deleteDiagram); // DELETE /api/diagrams/:id
+  .get(getDiagram)
+  .put(updateDiagram)
+  .delete(deleteDiagram);
+
+// Mount collaboration routes under /api/diagrams/:id/collaborators
+router.use("/:id/collaborators", collaborationRouter);
 
 export default router;

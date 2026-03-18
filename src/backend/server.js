@@ -44,7 +44,7 @@ mongoose
   .then(() => {
     console.log("✅ MongoDB connected");
     app.listen(PORT, () => {
-      console.log(`🚀 CloudForge API running on http://localhost:${PORT}`);
+      console.log(`🚀 StackForge API running on http://localhost:${PORT}`);
     });
   })
   .catch((err) => {

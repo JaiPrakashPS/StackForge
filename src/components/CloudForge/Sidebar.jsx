@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { COMPONENTS } from "./constants";
 import ComponentCard from "./ComponentCard";
 import "./Sidebar.css";
@@ -7,7 +7,18 @@ const CATEGORIES = ["All", ...new Set(COMPONENTS.map((c) => c.category))];
 
 export default function Sidebar({ totalCost, nodeCount, edgeCount, onClear, onExportJSON, onExportTerraform, onSave, saveStatus, diagramName }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const filtered = selectedCategory === "All" ? COMPONENTS : COMPONENTS.filter((c) => c.category === selectedCategory);
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    let list = selectedCategory === "All"
+      ? COMPONENTS
+      : COMPONENTS.filter((c) => c.category === selectedCategory);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter((c) => c.label.toLowerCase().includes(q) || c.category.toLowerCase().includes(q));
+    }
+    return list;
+  }, [selectedCategory, search]);
 
   return (
     <div className="cf-sidebar">
@@ -17,7 +28,7 @@ export default function Sidebar({ totalCost, nodeCount, edgeCount, onClear, onEx
         <div className="cf-sb-logo-row">
           <div className="cf-sb-logo-mark">☁</div>
           <div>
-            <div className="cf-sb-logo-name">StackForge</div>
+            <div className="cf-sb-logo-name">CloudForge</div>
             <div className="cf-sb-logo-sub">ARCHITECTURE DESIGNER</div>
           </div>
         </div>
@@ -35,9 +46,24 @@ export default function Sidebar({ totalCost, nodeCount, edgeCount, onClear, onEx
         </div>
       </div>
 
+      {/* ── Search ── */}
+      <div className="cf-sb-search-wrap">
+        <span className="cf-sb-search-icon">🔍</span>
+        <input
+          className="cf-sb-search"
+          type="text"
+          placeholder="Search components..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        {search && (
+          <button className="cf-sb-search-clear" onClick={() => setSearch("")}>✕</button>
+        )}
+      </div>
+
       {/* ── Filter ── */}
       <div className="cf-sb-filter">
-        <span className="cf-sb-label">FILTER BY CATEGORY</span>
+        <span className="cf-sb-label">CATEGORY</span>
         <div className="cf-sb-filter-pills">
           {CATEGORIES.map((cat) => (
             <button
@@ -55,9 +81,19 @@ export default function Sidebar({ totalCost, nodeCount, edgeCount, onClear, onEx
 
       {/* ── Components ── */}
       <div className="cf-sb-components">
-        <span className="cf-sb-label">DRAG TO CANVAS</span>
+        <span className="cf-sb-label">
+          DRAG TO CANVAS
+          <span className="cf-sb-count">{filtered.length}</span>
+        </span>
         <div className="cf-sb-list">
-          {filtered.map((comp) => <ComponentCard key={comp.type} comp={comp} />)}
+          {filtered.length > 0
+            ? filtered.map((comp) => <ComponentCard key={comp.type} comp={comp} />)
+            : (
+              <div className="cf-sb-empty">
+                No components match "{search}"
+              </div>
+            )
+          }
         </div>
       </div>
 

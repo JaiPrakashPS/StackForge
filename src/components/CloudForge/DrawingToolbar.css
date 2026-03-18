@@ -1,42 +1,80 @@
 /* DrawingToolbar.css */
 
 .cf-toolbar {
-  position: absolute; top: 50%; left: 14px;
+  position: absolute;
+  top: 50%; left: 14px;
   transform: translateY(-50%);
   z-index: 20;
   display: flex; flex-direction: column; gap: 2px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px; padding: 8px 6px;
-  box-shadow: var(--shadow-lg);
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 8px 6px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
 }
+
 .cf-toolbar-sep {
-  height: 1px; background: var(--border); margin: 3px 4px;
+  height: 1px;
+  background: #e2e8f0;
+  margin: 3px 5px;
 }
+
 .cf-tool-btn {
-  width: 40px; height: 40px; border-radius: 9px;
+  width: 40px; height: 40px;
+  border-radius: 9px;
   border: 1.5px solid transparent;
   background: transparent;
-  color: var(--text-4);
-  font-size: 17px; font-weight: 400;
-  cursor: pointer; display: flex; align-items: center;
-  justify-content: center; transition: all 0.12s; position: relative;
+  color: #475569;                /* ← dark enough to see on white */
+  font-size: 17px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+  position: relative;
 }
 .cf-tool-btn:hover {
-  background: var(--surface-2);
-  color: var(--text-2);
-  border-color: var(--border);
+  background: #f1f5f9;
+  color: #1e293b;
+  border-color: #cbd5e1;
 }
 .cf-tool-btn-active {
-  background: var(--blue-light) !important;
-  border-color: #93c5fd !important;
-  color: var(--blue) !important;
-  box-shadow: 0 2px 8px rgba(37,99,235,0.15);
+  background: #eff6ff !important;
+  border-color: #2563eb !important;
+  color: #2563eb !important;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.18);
 }
-.cf-tool-btn-text { font-size: 15px; font-weight: 800; }
+.cf-tool-btn-text {
+  font-size: 15px;
+  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+}
 .cf-tool-shortcut {
-  position: absolute; bottom: 3px; right: 4px;
-  font-family: var(--mono); font-size: 8px;
-  color: var(--text-4); line-height: 1; font-weight: 500;
+  position: absolute;
+  bottom: 3px; right: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: #94a3b8;
+  line-height: 1;
+  font-weight: 600;
 }
 .cf-tool-btn-active .cf-tool-shortcut { color: #93c5fd; }
+
+/* Tool label tooltip on hover */
+.cf-tool-btn::before {
+  content: attr(title);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%; transform: translateY(-50%);
+  background: #1e293b;
+  color: #f1f5f9;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+}
+.cf-tool-btn:hover::before { opacity: 1; }

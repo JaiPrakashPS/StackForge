@@ -238,23 +238,160 @@
 .cf-modal-btn-cancel:hover { background: var(--surface); border-color: var(--border-2); }
 
 /* ── ReactFlow overrides ─────────────────────────────────────────── */
-.react-flow__background { background: var(--bg); }
+.react-flow__background { background: #f1f5f9; }
+.react-flow__pane { cursor: default !important; }
+
+/* ── Controls — dark bg so SVG icons are visible ─────────────────── */
 .react-flow__controls {
-  background: var(--surface) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: var(--radius-lg) !important;
-  box-shadow: var(--shadow) !important;
+  background: #1e293b !important;
+  border: 1.5px solid #334155 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25) !important;
   overflow: hidden;
+  bottom: 100px !important;
 }
 .react-flow__controls-button {
-  background: var(--surface) !important;
-  border-bottom: 1px solid var(--border) !important;
-  color: var(--text-2) !important;
+  background: #1e293b !important;
+  border-bottom: 1px solid #334155 !important;
+  color: #e2e8f0 !important;
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
 }
-.react-flow__controls-button:hover { background: var(--surface-2) !important; color: var(--blue) !important; }
+.react-flow__controls-button svg {
+  fill: #cbd5e1 !important;
+  width: 14px !important; height: 14px !important;
+}
+.react-flow__controls-button:hover { background: #2563eb !important; }
+.react-flow__controls-button:hover svg { fill: #fff !important; }
+
+/* ── MiniMap ──────────────────────────────────────────────────────── */
 .react-flow__minimap {
-  background: var(--surface) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: var(--radius-lg) !important;
-  box-shadow: var(--shadow) !important;
+  background: #fff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10) !important;
+}
+
+/* ── Edges ────────────────────────────────────────────────────────── */
+.react-flow__edge-path {
+  stroke-width: 2.5 !important;
+  cursor: pointer;
+}
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke-width: 4 !important;
+}
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke-width: 3.5 !important;
+}
+
+/* ── Connection line while dragging ──────────────────────────────── */
+.react-flow__connectionline {
+  z-index: 1001 !important;
+}
+.react-flow__connection-path {
+  stroke: #2563eb !important;
+  stroke-width: 2.5 !important;
+  stroke-dasharray: 6 3 !important;
+  animation: dash-flow 0.5s linear infinite !important;
+}
+@keyframes dash-flow {
+  to { stroke-dashoffset: -18; }
+}
+
+/* ── Handles — BIG, colourful, always visible ─────────────────────── */
+.react-flow__handle {
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  border: 2.5px solid #fff !important;
+  box-shadow: 0 0 0 2px currentColor, 0 2px 6px rgba(0,0,0,0.2) !important;
+  cursor: crosshair !important;
+  z-index: 10 !important;
+  opacity: 1 !important;
+  transition: transform 0.15s, box-shadow 0.15s !important;
+}
+.react-flow__handle:hover {
+  transform: scale(1.4) !important;
+  box-shadow: 0 0 0 3px currentColor, 0 4px 12px rgba(0,0,0,0.25) !important;
+}
+.react-flow__handle-connecting {
+  background: #10b981 !important;
+  transform: scale(1.5) !important;
+}
+.react-flow__handle-valid {
+  background: #10b981 !important;
+  box-shadow: 0 0 0 3px #10b981, 0 0 12px #10b98166 !important;
+}
+
+/* ── Nodes ────────────────────────────────────────────────────────── */
+.react-flow__node { cursor: grab !important; }
+.react-flow__node:active { cursor: grabbing !important; }
+.react-flow__node.selected { z-index: 100 !important; }
+
+/* ── Selection box ────────────────────────────────────────────────── */
+.react-flow__selection {
+  background: rgba(37,99,235,0.06) !important;
+  border: 1.5px dashed #2563eb !important;
+  border-radius: 4px;
+}
+
+/* ── Node Resizer — visible handles ───────────────────────────────── */
+.react-flow__resize-control.handle {
+  width: 10px !important; height: 10px !important;
+  border-radius: 3px !important;
+  border: 2px solid #2563eb !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 1.5px rgba(37,99,235,0.4), 0 2px 6px rgba(0,0,0,0.15) !important;
+  z-index: 20 !important;
+}
+.react-flow__resize-control.handle:hover {
+  background: #2563eb !important;
+  transform: scale(1.2);
+}
+.react-flow__resize-control.line {
+  border-color: rgba(37,99,235,0.5) !important;
+  border-style: dashed !important;
+  border-width: 1.5px !important;
+}
+
+/* ── Navbar: New Diagram button ──────────────────────────────────── */
+.cf-nav-btn-new {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 13px; border-radius: var(--radius);
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-2); cursor: pointer; font-family: var(--sans);
+  font-size: 13px; font-weight: 600; transition: all 0.15s;
+}
+.cf-nav-btn-new:hover { border-color: #93c5fd; color: var(--blue); background: var(--blue-light); }
+
+/* ── Navbar: Scan button ─────────────────────────────────────────── */
+.cf-nav-btn-scan {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: var(--radius);
+  background: var(--surface-2); border: 1.5px solid var(--border);
+  color: var(--text-2); cursor: pointer; font-family: var(--sans);
+  font-size: 13px; font-weight: 600; transition: all 0.15s;
+  position: relative;
+}
+.cf-nav-btn-scan:hover       { border-color: #93c5fd; color: var(--blue); background: var(--blue-light); }
+.cf-nav-btn-scan-error       { border-color: #fecaca !important; color: #dc2626 !important; background: #fef2f2 !important; }
+.cf-nav-btn-scan-warn        { border-color: #fde68a !important; color: #d97706 !important; background: #fffbeb !important; }
+.cf-nav-btn-scan-pass        { border-color: #a7f3d0 !important; color: #059669 !important; background: #ecfdf5 !important; }
+
+/* Scan badge dot */
+.cf-nav-scan-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; border-radius: 9px;
+  font-size: 10px; font-weight: 800; padding: 0 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.cf-nav-scan-badge-error { background: #dc2626; color: #fff; }
+.cf-nav-scan-badge-warn  { background: #d97706; color: #fff; }
+.cf-nav-scan-badge-pass  { background: #059669; color: #fff; }
+
+/* ── Canvas pane: highlighted node overlay ───────────────────────── */
+.cf-node-highlighted .react-flow__node {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
 }

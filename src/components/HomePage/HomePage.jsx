@@ -158,7 +158,7 @@ export default function HomePage() {
               <div className="hp-mockup-dot" style={{ background:"#ef4444" }} />
               <div className="hp-mockup-dot" style={{ background:"#f59e0b" }} />
               <div className="hp-mockup-dot" style={{ background:"#22c55e" }} />
-              <div className="hp-mockup-url">StackForge.app/canvas</div>
+              <div className="hp-mockup-url">stackforge.app/canvas</div>
             </div>
             <div style={{ padding:24 }}>
               <CanvasDiagram />
@@ -263,7 +263,7 @@ export default function HomePage() {
             <div className="hp-terminal anim-float">
               <div className="hp-terminal-line">
                 <span className="hp-terminal-prompt">$ </span>
-                <span className="hp-terminal-cmd">StackForge export --format=terraform</span>
+                <span className="hp-terminal-cmd">stackforge export --format=terraform</span>
               </div>
               <div className="hp-terminal-line hp-terminal-out">Analyzing 7 components...</div>
               <div className="hp-terminal-line hp-terminal-out">Validating connections... <span style={{color:"#22c55e"}}>✓</span></div>

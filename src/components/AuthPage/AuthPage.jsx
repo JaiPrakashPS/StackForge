@@ -56,7 +56,7 @@ export default function AuthPage({ mode = "login" }) {
           {/* Brand */}
           <div className="auth-brand" onClick={() => go("home")}>
             <div className="auth-brand-mark">☁</div>
-            <span className="auth-brand-name">CloudForge</span>
+            <span className="auth-brand-name">StackForge</span>
           </div>
 
           <div className="auth-animate">
@@ -168,7 +168,7 @@ export default function AuthPage({ mode = "login" }) {
 
           <div className="auth-testimonial">
             <div className="auth-testimonial-text">
-              "CloudForge saved our team hours of back-and-forth. We designed our entire staging environment visually and exported the Terraform in one click."
+              "StackForge saved our team hours of back-and-forth. We designed our entire staging environment visually and exported the Terraform in one click."
             </div>
             <div className="auth-testimonial-author">— Priya S., Senior DevOps Engineer</div>
           </div>

@@ -28,7 +28,7 @@ export default function Sidebar({ totalCost, nodeCount, edgeCount, onClear, onEx
         <div className="cf-sb-logo-row">
           <div className="cf-sb-logo-mark">☁</div>
           <div>
-            <div className="cf-sb-logo-name">CloudForge</div>
+            <div className="cf-sb-logo-name">StackForge</div>
             <div className="cf-sb-logo-sub">ARCHITECTURE DESIGNER</div>
           </div>
         </div>

@@ -11,6 +11,7 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
   Panel,
+  ConnectionLineType,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -19,7 +20,9 @@ import Sidebar from "./Sidebar";
 import DrawingToolbar from "./DrawingToolbar";
 import { RectangleNode, CircleNode, TextNode, FrameNode, CommentNode } from "./ShapeNodes";
 import { COMPONENTS, COLOR_MAP } from "./constants";
-import "./CloudForgeCanvas.css";
+import { scanDiagram } from "./scanner";
+import ScanPanel from "./ScanPanel";
+import "./StackForgeCanvas.css";
 
 const SHAPE_COLORS = ["#2563eb","#7c3aed","#059669","#d97706","#dc2626","#db2777","#0891b2"];
 
@@ -35,7 +38,7 @@ const nodeTypes = {
 let idCounter = 1;
 const getId = () => `node_${idCounter++}`;
 
-export default function CloudForgeCanvas() {
+export default function StackForgeCanvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [rfInstance, setRfInstance]     = useState(null);
@@ -54,6 +57,10 @@ export default function CloudForgeCanvas() {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saveName, setSaveName]         = useState("");
   const [saveDesc, setSaveDesc]         = useState("");
+  const [scanOpen, setScanOpen]         = useState(false);
+  const [isScanning, setIsScanning]     = useState(false);
+  const [scanResult, setScanResult]     = useState(null);
+  const [highlightedNodes, setHighlightedNodes] = useState([]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -83,9 +90,14 @@ export default function CloudForgeCanvas() {
     const isLine = activeTool === "line";
     setEdges((eds) => addEdge({
       ...params,
+      type: "smoothstep",
       animated: !isLine,
-      style: { stroke: activeColor, strokeWidth: 2, strokeDasharray: isLine ? "6 3" : "none" },
-      markerEnd: isLine ? undefined : { type: "arrowclosed", color: activeColor },
+      style: {
+        stroke: activeColor,
+        strokeWidth: 2.5,
+        strokeDasharray: isLine ? "8 4" : undefined,
+      },
+      markerEnd: isLine ? undefined : { type: "arrowclosed", color: activeColor, width: 16, height: 16 },
     }, eds));
   }, [activeTool, activeColor, setEdges]);
 
@@ -93,17 +105,17 @@ export default function CloudForgeCanvas() {
 
   // Initial sizes — NodeResizer needs style.width/height to persist resize
   const INITIAL_SIZE = {
-    cloud:     { width: 180, height: 120 },
-    rectangle: { width: 200, height: 110 },
-    circle:    { width: 140, height: 140 },
-    textNode:  { width: 200, height: 60  },
-    frame:     { width: 340, height: 220 },
-    comment:   { width: 220, height: 110 },
+    cloud:     { width: 140, height: 90  },
+    rectangle: { width: 150, height: 80  },
+    circle:    { width: 100, height: 100 },
+    textNode:  { width: 160, height: 44  },
+    frame:     { width: 260, height: 180 },
+    comment:   { width: 180, height: 80  },
   };
 
   const onDrop = useCallback((e) => {
     e.preventDefault();
-    const type = e.dataTransfer.getData("application/cloudforge");
+    const type = e.dataTransfer.getData("application/stackforge");
     if (!type || !rfInstance) return;
     const bounds = wrapperRef.current.getBoundingClientRect();
     const position = rfInstance.project({ x: e.clientX - bounds.left, y: e.clientY - bounds.top });
@@ -164,7 +176,7 @@ export default function CloudForgeCanvas() {
   const handleClear = () => { setNodes([]); setEdges([]); setPencilLines([]); idCounter = 1; setDiagramName("Untitled Architecture"); };
   const handleExportJSON = () => {
     const blob = new Blob([JSON.stringify({ nodes, edges, pencilLines }, null, 2)], { type: "application/json" });
-    Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "cloudforge.json" }).click();
+    Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "stackforge.json" }).click();
   };
 
   // Save to MongoDB
@@ -196,12 +208,44 @@ export default function CloudForgeCanvas() {
   };
 
   const handleExportTerraform = () => {
-    const lines = ["# CloudForge Terraform", `# Est. Cost: $${totalCost}/mo`, "", ...nodes.filter((n) => n.type === "cloud").map((n) => `resource "aws_${n.data.type}" "${n.id}" {\n  tags = { Name = "cloudforge-${n.id}" }\n}`)].join("\n");
+    const lines = ["# StackForge Terraform", `# Est. Cost: $${totalCost}/mo`, "", ...nodes.filter((n) => n.type === "cloud").map((n) => `resource "aws_${n.data.type}" "${n.id}" {\n  tags = { Name = "stackforge-${n.id}" }\n}`)].join("\n");
     const blob = new Blob([lines], { type: "text/plain" });
     Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "main.tf" }).click();
   };
 
-  const cursorMap = { select:"default",rectangle:"crosshair",circle:"crosshair",arrow:"default",line:"default",pencil:"crosshair",text:"text",frame:"crosshair",comment:"crosshair" };
+  const handleScan = () => {
+    setScanOpen(true);
+    setIsScanning(true);
+    setScanResult(null);
+    // Small delay so spinner renders before heavy computation
+    setTimeout(() => {
+      const result = scanDiagram(nodes, edges);
+      setScanResult(result);
+      setIsScanning(false);
+    }, 600);
+  };
+
+  const handleNewDiagram = () => {
+    if (nodes.length > 0) {
+      if (!window.confirm("Start a new diagram? Unsaved changes will be lost.")) return;
+    }
+    setNodes([]);
+    setEdges([]);
+    setPencilLines([]);
+    setDiagramName("Untitled Architecture");
+    setScanResult(null);
+    setHighlightedNodes([]);
+    idCounter = 1;
+    navigate("/canvas", { replace: true });
+  };
+
+  const handleHighlightNodes = (nodeIds) => {
+    setHighlightedNodes(nodeIds);
+    // Flash highlight then clear after 3s
+    setTimeout(() => setHighlightedNodes([]), 3000);
+  };
+
+  const cursorMap = { select:"default",rectangle:"crosshair",circle:"crosshair",arrow:"crosshair",line:"crosshair",pencil:"crosshair",text:"text",frame:"crosshair",comment:"crosshair" };
 
   const initials = user ? `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() : "?";
 
@@ -239,6 +283,24 @@ export default function CloudForgeCanvas() {
         <div className="cf-navbar-right">
           <button className="cf-nav-btn-ghost" onClick={() => navigate("/diagrams")}>
             🗂 My Diagrams
+          </button>
+          <button className="cf-nav-btn-new" onClick={handleNewDiagram}>
+            ＋ New
+          </button>
+          <button
+            className={`cf-nav-btn-scan${scanResult ? (scanResult.summary.errors > 0 ? " cf-nav-btn-scan-error" : scanResult.summary.warnings > 0 ? " cf-nav-btn-scan-warn" : " cf-nav-btn-scan-pass") : ""}`}
+            onClick={handleScan}
+          >
+            🔍 Scan
+            {scanResult && scanResult.summary.errors > 0 && (
+              <span className="cf-nav-scan-badge cf-nav-scan-badge-error">{scanResult.summary.errors}</span>
+            )}
+            {scanResult && scanResult.summary.errors === 0 && scanResult.summary.warnings > 0 && (
+              <span className="cf-nav-scan-badge cf-nav-scan-badge-warn">{scanResult.summary.warnings}</span>
+            )}
+            {scanResult && scanResult.summary.errors === 0 && scanResult.summary.warnings === 0 && scanResult.summary.total === 0 && (
+              <span className="cf-nav-scan-badge cf-nav-scan-badge-pass">✓</span>
+            )}
           </button>
           <button
             className={saveBtnClass}
@@ -359,7 +421,7 @@ export default function CloudForgeCanvas() {
             <span>{
               activeTool === "select"  ? "Click to select · Drag to move · Scroll to zoom" :
               activeTool === "pencil"  ? "Hold and drag to draw freehand" :
-              activeTool === "arrow" || activeTool === "line" ? "Drag between node handles to connect" :
+              activeTool === "arrow" || activeTool === "line" ? "Hover a node → grab the coloured dot → drag to another node" :
               "Click anywhere on the canvas to place"
             }</span>
           </div>
@@ -390,11 +452,19 @@ export default function CloudForgeCanvas() {
             onDrop={onDrop} onDragOver={onDragOver} onPaneClick={onPaneClick}
             nodeTypes={nodeTypes} fitView
             style={{ background:"#f1f5f9" }}
-            nodesDraggable={activeTool === "select"}
+            nodesDraggable={["select"].includes(activeTool)}
             panOnDrag={activeTool === "select"}
-            zoomOnScroll={activeTool === "select" || activeTool === "arrow"}
-            defaultEdgeOptions={{ animated:true, style:{ stroke:"#2563eb", strokeWidth:2 } }}
-            connectionLineStyle={{ stroke:"#2563eb", strokeWidth:2 }}
+            zoomOnScroll={activeTool === "select" || activeTool === "arrow" || activeTool === "line"}
+            nodesConnectable={true}
+            connectOnClick={false}
+            connectionRadius={30}
+            defaultEdgeOptions={{
+              animated: activeTool !== "line",
+              style: { stroke: activeColor, strokeWidth: 2.5 },
+              markerEnd: activeTool !== "line" ? { type: "arrowclosed", color: activeColor } : undefined,
+            }}
+            connectionLineStyle={{ stroke: activeColor, strokeWidth: 2.5 }}
+            connectionLineType="smoothstep" 
           >
             <Background variant={BackgroundVariant.Dots} color="#cbd5e1" gap={24} size={1.2} />
             <Controls />
@@ -416,6 +486,17 @@ export default function CloudForgeCanvas() {
             </Panel>
           </ReactFlow>
         </div>
+        {/* ── Scan Panel ── */}
+        <ScanPanel
+          isOpen={scanOpen}
+          onClose={() => setScanOpen(false)}
+          scanResult={scanResult}
+          isScanning={isScanning}
+          onScan={handleScan}
+          onNewDiagram={handleNewDiagram}
+          onHighlightNodes={handleHighlightNodes}
+          highlightedNodes={highlightedNodes}
+        />
       </div>
     </div>
   );

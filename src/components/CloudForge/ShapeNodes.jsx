@@ -2,11 +2,20 @@ import { useState, useRef, useEffect } from "react";
 import { Handle, Position, useReactFlow, NodeResizer } from "reactflow";
 import "./ShapeNodes.css";
 
-function resizerProps(color, selected, minW=80, minH=60) {
+function resizerProps(color, selected, minW=60, minH=40) {
   return {
     isVisible: selected, minWidth: minW, minHeight: minH,
-    handleStyle: { width:10, height:10, borderRadius:3, background:"#fff", border:`2px solid ${color}` },
-    lineStyle: { borderColor:`${color}55`, borderWidth:1.5 },
+    handleStyle: {
+      width: 10, height: 10, borderRadius: 3,
+      background: "#fff",
+      border: `2px solid ${color}`,
+      boxShadow: `0 0 0 1px ${color}`,
+    },
+    lineStyle: {
+      borderColor: color,
+      borderWidth: 1.5,
+      borderStyle: "dashed",
+    },
   };
 }
 function hs(color) {
